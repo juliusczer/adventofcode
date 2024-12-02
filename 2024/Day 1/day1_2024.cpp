@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm> // Provides sorting algroithm for arrays.
+#include <unordered_map> // Provides map implementation for accumulating frequencies in computeSimilarityScore.
 
 /**
  * @brief Returns the number of lines in the given file.
@@ -51,25 +52,17 @@ int computeDistance(int length, int *arr1, int *arr2) {
  * @param arr2 second array (right).
  * @return unsigned long long the accumulated total similarity score of all element pairs in the arrays.
  */
-unsigned long long computeSimilarityScore(int length, int *arr1, int *arr2) {
-    unsigned long long similarityScore = 0;
-    unsigned long long total = 0;
-    unsigned long long similarityCount = 0;
-    for (int i = 0 ; i < length; i++) {
-        similarityScore = arr1[i];
-        similarityCount = 0;
-        for (int j = 0; j < length; j++) {
-            if (similarityScore == arr2[j]) {
-                similarityCount++;
-            } else if (arr2[j] > similarityScore) {
-                // Since the arrays are sorted in ascending order, once we reach 
-                // a point where the elements in the second array are larger than 
-                // the element in the first array, we can break out of the second loop.
-                break;
-            }
-        }
-        similarityScore *= similarityCount;
-        total += similarityScore;
+int computeSimilarityScore(int length, int *arr1, int *arr2) {
+    int total = 0;
+
+    std::unordered_map<int, int> freqMap;
+    for (int i = 0; i < length; i++) {
+        freqMap[arr2[i]]++;
+    }
+
+    for (int i = 0; i < length; i++) {
+        int count = freqMap[arr1[i]];
+        total += arr1[i] * count;
     }
     return total;
 }
@@ -89,6 +82,7 @@ void parseFile(std::string fileName) {
     int leftInt = 0;
     int rightInt = 0;
     int counter = 0;
+
     while (std::getline(file, test)) {
         sscanf(test.c_str(), "%d %d", &leftInt, &rightInt);
         left[counter] = leftInt;
