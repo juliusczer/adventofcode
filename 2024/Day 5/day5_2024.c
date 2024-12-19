@@ -120,7 +120,7 @@ int main() {
         if (isOrdered(updates[i], update_sizes[i], rules, rule_count)) { // Proper order
             int middle = updates[i][update_sizes[i] / 2];
             sum_of_middle_pages += middle;
-        } else {                                                          // Improper order
+        } else {                                                         // Improper order
             reorderUpdate(updates[i], update_sizes[i], rules, rule_count);
             int middle = updates[i][update_sizes[i] / 2];
             sum_of_reordered_middle_pages += middle;
